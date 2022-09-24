@@ -6,8 +6,11 @@ import 'package:todo_application/utilities/constant.dart';
 import 'package:todo_application/widgets/drawer_widget.dart';
 import 'package:todo_application/widgets/search_widget.dart';
 import '../animations/listitem_animation.dart';
+import '../controllers/local_notification.dart';
 import '../widgets/line_widget.dart';
 import '../widgets/title_widget.dart';
+import 'package:timezone/data/latest.dart' as tz;
+
 
 class TodoPage extends StatefulWidget {
   const TodoPage({Key? key}) : super(key: key);
@@ -24,11 +27,23 @@ class _TodoPageState extends State<TodoPage>with TickerProviderStateMixin {
   final ScrollController _scrollController=ScrollController();
    bool _isScrolling=true;
 
+  LocalNotification localNotification=LocalNotification();
   final _statKey=GlobalKey<ScaffoldState>();
 
 
   @override
   void initState() {
+
+    localNotification.initialize();
+    tz.initializeTimeZones();
+
+    localNotification.scheduleNotificationSend(
+        payload: "rer",
+        schedule:DateTime.now().add(const Duration(seconds:2)),
+        title:"Hello Bangladesh",
+        body:"Flutter Developer");
+
+
     _animationController=AnimationController(vsync: this,
         duration: const Duration(seconds: 1),
         reverseDuration: const Duration(seconds: 1)
@@ -99,6 +114,7 @@ class _TodoPageState extends State<TodoPage>with TickerProviderStateMixin {
 
       drawer:const DrawerWidget(),
       
+
       floatingActionButton:CustomAnimatedWidget(
         animationController: _rAnimationController!,
         wSlideDirection:AnimDirection.fromBottom,

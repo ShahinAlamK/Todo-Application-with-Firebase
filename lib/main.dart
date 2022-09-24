@@ -3,8 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:todo_application/ui/signin_page.dart';
 import 'package:todo_application/utilities/themes.dart';
 
-void main() {
-
+void main()async{
+  WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setSystemUIOverlayStyle(CustomTheme.systemUiOverlayStyle);
   runApp(const MyApp());
 }

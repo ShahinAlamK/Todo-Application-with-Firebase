@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:todo_application/models/developer_model.dart';
 
+import '../controllers/local_notification.dart';
+
 class DrawerWidget extends StatelessWidget {
   const DrawerWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
 
+    LocalNotification localNotification=LocalNotification();
     //final size=MediaQuery.of(context).size;
 
     return Drawer(
@@ -28,13 +31,20 @@ class DrawerWidget extends StatelessWidget {
               ),
               accountName:Text("Shahin Alam Kiron",style: Theme.of(context).textTheme.bodyText1), accountEmail: Text("kerons89@gamil.com",style: Theme.of(context).textTheme.bodyText2)),
 
-          const ListTile(
-            leading: Icon(Icons.done_all),
-            title: Text("Complete Task"),
+           ListTile(
+            onTap:(){
+              Navigator.pop(context);
+            },
+            leading: const Icon(Icons.done_all),
+            title: const Text("Complete Task"),
           ),
-          const ListTile(
-            leading: Icon(Icons.settings),
-            title: Text("Settings"),
+           ListTile(
+            onTap:(){
+              Navigator.pop(context);
+              localNotification.notificationSend("Settings","Coming Soon");
+            },
+            leading: const Icon(Icons.settings),
+            title: const Text("Settings"),
           ),
           ListTile(
             onTap:(){
