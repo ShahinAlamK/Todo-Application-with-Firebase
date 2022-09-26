@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:todo_application/models/developer_model.dart';
-
+import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
+import 'package:todo_application/providers/auth_provider.dart';
+import 'package:todo_application/providers/task_provider.dart';
+import 'package:todo_application/ui/completed_page.dart';
+import 'package:todo_application/ui/signin_page.dart';
+import '../animations/route_animation.dart';
 import '../controllers/local_notification.dart';
+import '../providers/profile_provider.dart';
+import 'developer_info.dart';
 
 class DrawerWidget extends StatelessWidget {
   const DrawerWidget({Key? key}) : super(key: key);
@@ -9,13 +16,16 @@ class DrawerWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
+    final user=Provider.of<ProfileProvider>(context);
+    final task=Provider.of<TaskProvider>(context);
+    user.fetchUser();
     LocalNotification localNotification=LocalNotification();
-    //final size=MediaQuery.of(context).size;
 
     return Drawer(
       elevation:0,
       child: ListView(
         children: [
+
           UserAccountsDrawerHeader(
               decoration:BoxDecoration(color:Theme.of(context).scaffoldBackgroundColor),
               currentAccountPicture: Container(
@@ -24,17 +34,29 @@ class DrawerWidget extends StatelessWidget {
                 decoration:const BoxDecoration(
                     color: Colors.orange,
                     shape: BoxShape.circle,
-                    image: DecorationImage(
-                        fit: BoxFit.cover,
-                        image:NetworkImage(""))
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(50),
+                  child: Container(
+                    height: 40,
+                    width: 40,
+                    decoration:const BoxDecoration(
+                        color:Colors.blueGrey,
+                        shape: BoxShape.circle
+                    ),
+                    child: user.isLoading?Image.network(user.profileData.profile!,fit: BoxFit.cover,):SvgPicture.asset(""),
+                  ),
                 ),
               ),
-              accountName:Text("Shahin Alam Kiron",style: Theme.of(context).textTheme.bodyText1), accountEmail: Text("kerons89@gamil.com",style: Theme.of(context).textTheme.bodyText2)),
+              accountName:Text(user.isLoading?user.profileData.name!:"",style: Theme.of(context).textTheme.bodyText1),
+              accountEmail: Text(user.isLoading?user.profileData.email!:"",style: Theme.of(context).textTheme.bodyText2)),
 
            ListTile(
             onTap:(){
               Navigator.pop(context);
+              Navigator.of(context).push(customRoute(const CompletedPage()));
             },
+             trailing: Text("${task.isLoading?0:task.completeTodo.length.toString()}"),
             leading: const Icon(Icons.done_all),
             title: const Text("Complete Task"),
           ),
@@ -46,20 +68,22 @@ class DrawerWidget extends StatelessWidget {
             leading: const Icon(Icons.settings),
             title: const Text("Settings"),
           ),
-          ListTile(
+           ListTile(
             onTap:(){
               Navigator.pop(context);
               showDialog(context: context, builder:(_){
-                return DeveloperInfoDialog();
+                return const DeveloperInfoDialog();
               });
             },
             leading: const Icon(Icons.device_hub),
             title: const Text("Developer"),
           ),
-          ListTile(
+           ListTile(
             leading: const Icon(Icons.exit_to_app),
             title: const Text("Log Out"),
-            onTap: (){},
+            onTap: (){
+              Provider.of<AuthProvider>(context,listen: false).signOut().whenComplete(() => Navigator.of(context).pushReplacement(customRoute(const SignWithEmail())));
+            },
           ),
         ],
       ),
@@ -67,47 +91,4 @@ class DrawerWidget extends StatelessWidget {
   }
 }
 
-class DeveloperInfoDialog extends StatelessWidget {
-  const DeveloperInfoDialog({Key? key}) : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
-    final theme=Theme.of(context);
-    return Dialog(
-      insetPadding: EdgeInsets.symmetric(horizontal: 55),
-      child: Container(
-        height:250,
-        decoration:BoxDecoration(
-          color:theme.scaffoldBackgroundColor,
-          borderRadius: BorderRadius.circular(7),
-        ),
-        child: Stack(
-          alignment: Alignment.center,
-          clipBehavior: Clip.none,
-          children: [
-            Positioned(
-              top: -50,
-                child:CircleAvatar(radius: 40,backgroundColor: theme.colorScheme.secondary,backgroundImage: NetworkImage(developer.pic!),)),
-
-            Container(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height:35),
-                  Center(child: Text(developer.name!,style: theme.textTheme.bodyText1,)),
-                  const SizedBox(height:25),
-                  Text("Email : ${developer.email}",style: theme.textTheme.bodyText2,),
-                  const SizedBox(height: 6,),
-                  Text("professional : ${developer.professional}",style: theme.textTheme.bodyText2,),
-                  const SizedBox(height:6),
-                  Text("Address : ${developer.address}",style: theme.textTheme.bodyText2,),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:todo_application/providers/auth_provider.dart';
 import 'package:todo_application/ui/todo_page.dart';
 import '../animations/route_animation.dart';
+import '../controllers/store_token.dart';
 import '../utilities/themes.dart';
 import '../widgets/button_widget.dart';
 import '../widgets/loading_widget.dart';
@@ -39,9 +42,10 @@ class _SignWithEmailState extends State<SignWithEmail>with SingleTickerProviderS
       }
       else{
         setState(()=>isLoading=true);
-        await Future.delayed(const Duration(seconds: 3));
-        Navigator.of(context).push(customRoute(const TodoPage()));
-        setState(()=>isLoading=false);
+        Provider.of<AuthProvider>(context,listen: false)
+            .signInAuth(context,_emailController.text,_passwordController.text)
+            .whenComplete(() => setState(()=>isLoading=false));
+
       }
     }
   }

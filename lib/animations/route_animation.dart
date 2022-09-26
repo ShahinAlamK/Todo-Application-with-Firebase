@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
 
 Route customRoute(Widget page){
@@ -12,7 +11,7 @@ Route customRoute(Widget page){
       const begin = Offset(0.7, 0.0);
       const end = Offset.zero;
       final tween = Tween(begin: begin, end: end);
-      final Ftween = Tween(begin: 0.0, end:01.0);
+      final Ftween = Tween<double>(begin: 0.0, end:01.0);
       final offsetAnimation = animation.drive(tween);
       final fadeOpacity=animation.drive(Ftween);
 

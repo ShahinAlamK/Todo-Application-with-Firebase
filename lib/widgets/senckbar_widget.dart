@@ -14,7 +14,7 @@ messageSnack(BuildContext context,Color bg,String title)async{
             children: [
               const Icon(Icons.info_outline),
               const SizedBox(width: 10,),
-              Text(title,style: Theme.of(context).textTheme.bodyText1,),
+             Expanded(child:  Text(title,style: Theme.of(context).textTheme.bodyText1,),)
             ],
           ))));
 }

@@ -1,8 +1,13 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:todo_application/models/todo_model.dart';
+import 'package:todo_application/providers/task_provider.dart';
 import 'package:todo_application/utilities/constant.dart';
+import 'package:todo_application/widgets/loading_widget.dart';
+import 'package:todo_application/widgets/senckbar_widget.dart';
 
-import '../utilities/themes.dart';
 import '../widgets/button_widget.dart';
 
 
@@ -15,6 +20,9 @@ class CreateTodoPage extends StatefulWidget {
 
 class _CreateTodoPageState extends State<CreateTodoPage> {
 
+  bool isLoading=false;
+
+  final _key=GlobalKey<FormState>();
   final TextEditingController _titleController=TextEditingController();
   final TextEditingController _descriptionController=TextEditingController();
   int _selectDate=DateTime.now().millisecondsSinceEpoch;
@@ -22,50 +30,85 @@ class _CreateTodoPageState extends State<CreateTodoPage> {
     String _endTime=DateFormat("hh:mm a").format(DateTime.now()).toString();
 
 
+    storeTodo()async{
+      if(_key.currentState!.validate()){
+        if(_titleController.text.isEmpty || _descriptionController.text.isEmpty){
+          messageSnack(context,Colors.redAccent,"Invalid Form");
+        }else{
+          TodoModel todoModel=TodoModel(
+            title:_titleController.text,
+            description: _descriptionController.text,
+            dateTime: _selectDate,
+            end:_endTime,
+            start: _startTime,
+            isComplete:false ,
+          );
+          setState(()=>isLoading=true);
+
+          Provider.of<TaskProvider>(context,listen: false).createTask(
+              uid:FirebaseAuth.instance.currentUser!.uid,
+              context: context, todoModel:todoModel
+          ).whenComplete((){
+            setState(()=>isLoading=false);
+          });
+        }
+      }
+    }
 
   @override
   Widget build(BuildContext context) {
     final theme=Theme.of(context);
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Create an new Todo',style: theme.textTheme.headline6,),
-      ),
-      body: Padding(
-        padding:EdgeInsets.symmetric(horizontal: Constant.defaultPadding),
-        child: SingleChildScrollView(
-          physics:const BouncingScrollPhysics(),
-          child: Column(
-            children:[const SizedBox(height: 20,),
-              
-              FormWidget(label: "Title",hint:"Title",controller:_titleController),
-              const SizedBox(height:30),
-              FormWidget(label: "Description",hint:"Description",controller:_descriptionController,widget: null,maxLength:3),
-              const SizedBox(height:30),
-              FormWidget(label: "Date Time",hint:Constant.getDateTime(_selectDate),widget:IconButton(onPressed:(){
-                _datePicker();
-              }, icon:const Icon(Icons.date_range)),),
-              const SizedBox(height:30),
-              Row(
-                children: [
-                  Expanded(child: FormWidget(label: "Start date",hint:_startTime,widget: IconButton(onPressed:(){
-                    checkDateTime(isStartDate: true);
-                  }, icon:const Icon(Icons.access_time_outlined)),)),
-                  const SizedBox(width:15),
-                  Expanded(child: FormWidget(label: "End date",hint:_endTime,widget:IconButton(onPressed:(){
-                    checkDateTime(isStartDate: false);
-                  }, icon:const Icon(Icons.access_time_outlined)),)),
+    return OverLoading(
+      isLoading: isLoading,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Create an new Todo',style: theme.textTheme.headline6,),
+        ),
+        body: Padding(
+          padding:EdgeInsets.symmetric(horizontal: Constant.defaultPadding),
+          child: SingleChildScrollView(
+            physics:const BouncingScrollPhysics(),
+            child: Form(
+              key: _key,
+              child: Column(
+                children:[const SizedBox(height: 20,),
+
+                  FormWidget(label: "Title",hint:"Title",controller:_titleController),
+                  const SizedBox(height:30),
+                  FormWidget(label: "Description",hint:"Description",controller:_descriptionController,widget: null,maxLength:3),
+                  const SizedBox(height:30),
+                  FormWidget(label: "Date Time",hint:Constant.getDateTime(_selectDate),widget:IconButton(onPressed:(){
+                    _datePicker();
+                  }, icon:const Icon(Icons.date_range)),),
+
+                  const SizedBox(height:30),
+                  Row(
+                    children: [
+                      Expanded(child: FormWidget(label: "Start date",hint:_startTime,widget: IconButton(onPressed:(){
+                        getTimePicker(isStartDate: true);
+                      }, icon:const Icon(Icons.access_time_outlined)),)),
+
+                      const SizedBox(width:15),
+
+                      Expanded(child: FormWidget(label: "End date",hint:_endTime,widget:IconButton(onPressed:(){
+                        getTimePicker(isStartDate: false);
+                      }, icon:const Icon(Icons.access_time_outlined)),)),
+                    ],
+                  ),
+
+                  const SizedBox(height:30),
+
+                 ButtonWidget(
+                   onTap:(){
+                     storeTodo();
+                   },
+                   label: Text("Create Todo",style:theme.textTheme.bodyText1,),
+                   color:theme.colorScheme.secondary,
+                   radius: 7,
+                 )
                 ],
               ),
-
-              const SizedBox(height:30),
-
-             ButtonWidget(
-               onTap:(){},
-               label: Text("Create Todo",style:theme.textTheme.bodyText1,),
-               color:theme.colorScheme.secondary,
-               radius: 7,
-             )
-            ],
+            ),
           ),
         ),
       ),
@@ -73,33 +116,33 @@ class _CreateTodoPageState extends State<CreateTodoPage> {
   }
 
   _datePicker()async{
-    DateTime?_pickDate=await showDatePicker(
+    DateTime?pickDate=await showDatePicker(
         context: context,
         initialDate: DateTime.now(),
         firstDate: DateTime(2000),
         lastDate: DateTime(2030),
     );
-    if(_pickDate!=null){
+    if(pickDate!=null){
       setState(() {
-        _selectDate=_pickDate.millisecondsSinceEpoch;
+        _selectDate=pickDate.millisecondsSinceEpoch;
       });
     }
   }
 
-  checkDateTime({required bool isStartDate})async{
-    var pickTime=_showTimePicker();
-    final String formate=pickTime.formate(context);
+  getTimePicker({required bool isStartDate})async{
+    var pickTime=await _showTimePicker();
+    TimeOfDay formate=pickTime;
 
     if(pickTime==null){
 
     } if(isStartDate==true){
-      _startTime=formate;
+      setState(()=>_startTime=formate.format(context).toString());
     } if(isStartDate==false){
-      _endTime=formate;
+      setState(()=>_endTime=formate.format(context).toString());
     }
   }
 
-  _showTimePicker()async{
+ Future _showTimePicker()async{
     return showTimePicker(
         context: context,
         initialTime:TimeOfDay(

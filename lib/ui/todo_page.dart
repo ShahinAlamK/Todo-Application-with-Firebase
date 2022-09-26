@@ -1,19 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 import 'package:todo_application/animations/route_animation.dart';
+import 'package:todo_application/models/todo_model.dart';
 import 'package:todo_application/ui/create_todo_page.dart';
 import 'package:todo_application/ui/profile_page.dart';
 import 'package:todo_application/utilities/constant.dart';
 import 'package:todo_application/widgets/drawer_widget.dart';
 import 'package:todo_application/widgets/search_widget.dart';
-import '../animations/listitem_animation.dart';
 import '../controllers/local_notification.dart';
+import '../providers/profile_provider.dart';
+import '../providers/task_provider.dart';
+import '../views/todo_builder.dart';
+import '../widgets/empty_widget.dart';
 import '../widgets/line_widget.dart';
-import '../widgets/title_widget.dart';
 import 'package:timezone/data/latest.dart' as tz;
 
 
 class TodoPage extends StatefulWidget {
-  const TodoPage({Key? key}) : super(key: key);
+  const TodoPage({Key? key, required this.uid}) : super(key: key);
+  final String uid;
 
   @override
   State<TodoPage> createState() => _TodoPageState();
@@ -33,17 +39,8 @@ class _TodoPageState extends State<TodoPage>with TickerProviderStateMixin {
 
   @override
   void initState() {
-
     localNotification.initialize();
     tz.initializeTimeZones();
-
-    localNotification.scheduleNotificationSend(
-        payload: "rer",
-        schedule:DateTime.now().add(const Duration(seconds:2)),
-        title:"Hello Bangladesh",
-        body:"Flutter Developer");
-
-
     _animationController=AnimationController(vsync: this,
         duration: const Duration(seconds: 1),
         reverseDuration: const Duration(seconds: 1)
@@ -76,10 +73,29 @@ class _TodoPageState extends State<TodoPage>with TickerProviderStateMixin {
   }
 
 
+  String? _searchController='';
+  List<TodoModel>searchResult(String query){
+    List<TodoModel>result=Provider.of<TaskProvider>(context).taskList.where((element){
+      return element.title!.toLowerCase().contains(query.toLowerCase());
+    }).toList();
+    return result;
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
-    //final theme=Theme.of(context);
+
+    TaskProvider taskProvider=context.watch<TaskProvider>();
+    final user=Provider.of<ProfileProvider>(context);
+    user.fetchUser();
+
+    final task=Provider.of<TaskProvider>(context,listen: false);
+    task.fetchTask(uid:widget.uid);
+
+    List<TodoModel>todoSearch=searchResult(_searchController!);
+
+
     return  Scaffold(
       key: _statKey,
 
@@ -95,14 +111,21 @@ class _TodoPageState extends State<TodoPage>with TickerProviderStateMixin {
 
             GestureDetector(
               onTap: (){
-                Navigator.of(context).push(customRoute(const ProfilePage()));
+                Navigator.of(context).push(customRoute(ProfilePage(
+                  username: user.profileData.name!,
+                  profile: user.profileData.profile!,
+                  uid: user.profileData.uid!,)));
               },
-              child: Container(
-                height: 40,
-                width: 40,
-                decoration:const BoxDecoration(
-                  color:Colors.blueGrey,
-                  shape: BoxShape.circle
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(50),
+                child: Container(
+                  height: 40,
+                  width: 40,
+                  decoration:const BoxDecoration(
+                    color:Colors.blueGrey,
+                    shape: BoxShape.circle
+                  ),
+                 child: user.isLoading?Image.network(user.profileData.profile!,fit: BoxFit.cover,):SvgPicture.asset(""),
                 ),
               ),
             ),
@@ -124,85 +147,50 @@ class _TodoPageState extends State<TodoPage>with TickerProviderStateMixin {
           child: const Icon(Icons.add),),
       ),
 
-      body:Padding(
-        padding:EdgeInsets.symmetric(horizontal: Constant.defaultPadding),
-        child: Column(
-          children:[
+      body:SafeArea(
+        child: Padding(
+          padding:EdgeInsets.symmetric(horizontal: Constant.defaultPadding),
+          child: Column(
+            children:[
 
-           const SizedBox(height:15),
-            const SearchWidget(),
+             const SizedBox(height:15),
+              SearchWidget(valueChanged: (value) {
+                setState(() {
+                  _searchController=value;
+                });
+              },),
 
-            const SizedBox(height:25),
-            const LineWidget(),
+              const SizedBox(height:25),
+              const LineWidget(),
 
-            const SizedBox(height:25),
+              const SizedBox(height:25),
 
-            TodoBuilder(scrollController:_scrollController,),
+              ui(taskProvider,todoSearch),
 
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
-}
 
-class TodoBuilder extends StatefulWidget {
-  final ScrollController scrollController;
+  ui(TaskProvider taskProvider,query){
 
-  const TodoBuilder({Key? key, required this.scrollController,}) : super(key: key);
-
-
-  @override
-  State<TodoBuilder> createState() => _TodoBuilderState();
-}
-
-class _TodoBuilderState extends State<TodoBuilder>with SingleTickerProviderStateMixin {
-
-  AnimationController? _animationController;
-  bool isExpanded=false;
-
-  @override
-  void initState() {
-    _animationController=AnimationController(vsync: this,duration: const Duration(seconds: 2));
-    super.initState();
-  }
-
-
-  @override
-  Widget build(BuildContext context) {
-    final theme=Theme.of(context);
-    return Expanded(child: ListView.separated(
-      controller: widget.scrollController,
-      physics: const BouncingScrollPhysics(),
-        separatorBuilder: (_,index){return const SizedBox(height: 15,);},
-        itemCount: 30,
-        itemBuilder: (_,index){
-          return ListAnimation(
-            position: index,
-              item: 20,
-              slideDirection: SlideDirection.fromTop,
-              animationController:_animationController!,
-              child:TitleWidget(
-                onTap: (){},
-                longTap:(){bottomSheetModel(context);},
-                leading: Container(
-                  height: 30,
-                  width: 30,
-                  decoration:BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: theme.colorScheme.secondary
-                  ),
-                  child:const Icon(Icons.ac_unit_outlined),
-                ),
-                trilling:Checkbox(value: true, onChanged:(value){}),
-
-                title:Text("Title Hello Bangladesh People",maxLines: 1,overflow:TextOverflow.ellipsis,style: theme.textTheme.bodyText1,),
-                subTitle: Text("category: coding",style: theme.textTheme.bodyText2,),
-              ));
-        },
-
-    ));
+    if(taskProvider.isLoading){
+      return const Expanded(child: Center(child: CircularProgressIndicator()));
+    }
+    if(taskProvider.taskList.isEmpty){
+      return const EmptyWidget(massage:"Uncompleted Todo",);
+    }else{
+      return TodoBuilder(scrollController:_scrollController,todoList:query);
+    }
   }
 }
+
+
+
+
+
+
 
 

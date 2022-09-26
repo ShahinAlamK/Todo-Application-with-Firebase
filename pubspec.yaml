@@ -43,6 +43,11 @@ dependencies:
   flutter_svg: ^0.23.0+1
   flutter_local_notifications: ^11.0.1
   timezone: ^0.9.0
+  firebase_auth: ^3.3.0
+  firebase_core: ^1.10.2
+  cloud_firestore: ^3.1.1
+  firebase_storage: ^10.2.0
+  firebase_analytics: ^8.3.4
 
 dev_dependencies:
   flutter_test:

@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:todo_application/ui/todo_page.dart';
+import 'package:todo_application/widgets/loading_widget.dart';
 
+import '../animations/route_animation.dart';
+import '../providers/auth_provider.dart';
 import '../utilities/themes.dart';
 import '../widgets/button_widget.dart';
 import '../widgets/senckbar_widget.dart';
@@ -29,7 +34,10 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
         messageSnack(context,theme.errorColor,"Invalid FormField");
       }
       else{
-
+        setState(()=>isLoading=true);
+        Provider.of<AuthProvider>(context,listen: false)
+            .signUpWithEmail(context,_emailController.text,_passwordController.text,_usernameController.text)
+            .whenComplete(() => setState(()=>isLoading=false));
       }
     }
   }
@@ -37,73 +45,76 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
   @override
   Widget build(BuildContext context) {
     final size=MediaQuery.of(context).size;
-    return Scaffold(
-      body:Padding(
-        padding:const EdgeInsets.symmetric(horizontal: 30),
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            children: [
-              SizedBox(height:size.height*.04),
+    return OverLoading(
+      isLoading:isLoading,
+      child: Scaffold(
+        body:Padding(
+          padding:const EdgeInsets.symmetric(horizontal: 30),
+          child: Form(
+            key: _formKey,
+            child: ListView(
+              children: [
+                SizedBox(height:size.height*.04),
 
-              Center(child: Column(
-                    children: [
-                      Text("Welcome to",textAlign:TextAlign.center, style:Theme.of(context).textTheme.bodyText1!.copyWith(fontSize: 35)),
-                      const SizedBox(height: 10,),
-                      Text("Todo helps you stay organized and perform you tasks much faster",textAlign:TextAlign.center,
-                          style:Theme.of(context).textTheme.bodyText1!.copyWith(fontSize:14)),
-                    ],
-                  )
-              ),
-
-              SizedBox(height:size.height*.12,),
-
-
-              TextFormField(
-                controller: _usernameController,
-                decoration: InputDecoration(
-                    hintText: "Username",
-                    prefixIcon: const Icon(Icons.person),
-                    filled: true,
-                    hintStyle: Theme.of(context).textTheme.bodyText2,
-                    border: InputBorder.none
+                Center(child: Column(
+                      children: [
+                        Text("Welcome to",textAlign:TextAlign.center, style:Theme.of(context).textTheme.bodyText1!.copyWith(fontSize: 35)),
+                        const SizedBox(height: 10,),
+                        Text("Todo helps you stay organized and perform you tasks much faster",textAlign:TextAlign.center,
+                            style:Theme.of(context).textTheme.bodyText1!.copyWith(fontSize:14)),
+                      ],
+                    )
                 ),
-              ),
-              SizedBox(height:size.height*.03 ,),
-              TextFormField(
-                controller: _emailController,
-                decoration: InputDecoration(
-                    hintText: "Enter Email",
-                    hintStyle: Theme.of(context).textTheme.bodyText2,
-                    prefixIcon: const Icon(Icons.email),
-                    filled: true,
-                    border: InputBorder.none
-                ),
-              ),
-              SizedBox(height:size.height*.03 ,),
-              TextFormField(
-                controller: _passwordController,
-                decoration: InputDecoration(
-                    hintText: "Password",
-                    hintStyle: Theme.of(context).textTheme.bodyText2,
-                    prefixIcon: const Icon(Icons.lock),
-                    filled: true,
-                    border: InputBorder.none
-                ),
-              ),
-              SizedBox(height:size.height*.05,),
 
-              //SignUp Button
-              ButtonWidget(
-                onTap:() {
-                  formValidity();
-                },
-                radius: 7,
-                color: Theme.of(context).colorScheme.secondary,
-                label:Text("Create".toUpperCase(),style:Theme.of(context).textTheme.headline6!.copyWith(color:kBgColor),),
-              ),
+                SizedBox(height:size.height*.12,),
 
-            ],
+
+                TextFormField(
+                  controller: _usernameController,
+                  decoration: InputDecoration(
+                      hintText: "Username",
+                      prefixIcon: const Icon(Icons.person),
+                      filled: true,
+                      hintStyle: Theme.of(context).textTheme.bodyText2,
+                      border: InputBorder.none
+                  ),
+                ),
+                SizedBox(height:size.height*.03 ,),
+                TextFormField(
+                  controller: _emailController,
+                  decoration: InputDecoration(
+                      hintText: "Enter Email",
+                      hintStyle: Theme.of(context).textTheme.bodyText2,
+                      prefixIcon: const Icon(Icons.email),
+                      filled: true,
+                      border: InputBorder.none
+                  ),
+                ),
+                SizedBox(height:size.height*.03 ,),
+                TextFormField(
+                  controller: _passwordController,
+                  decoration: InputDecoration(
+                      hintText: "Password",
+                      hintStyle: Theme.of(context).textTheme.bodyText2,
+                      prefixIcon: const Icon(Icons.lock),
+                      filled: true,
+                      border: InputBorder.none
+                  ),
+                ),
+                SizedBox(height:size.height*.05,),
+
+                //SignUp Button
+                ButtonWidget(
+                  onTap:() {
+                    formValidity();
+                  },
+                  radius: 7,
+                  color: Theme.of(context).colorScheme.secondary,
+                  label:Text("Create".toUpperCase(),style:Theme.of(context).textTheme.headline6!.copyWith(color:kBgColor),),
+                ),
+
+              ],
+            ),
           ),
         ),
       ),

@@ -2,17 +2,21 @@ import 'package:flutter/material.dart';
 
 
 class EmptyWidget extends StatelessWidget {
-  const EmptyWidget({Key? key}) : super(key: key);
+  const EmptyWidget({Key? key, required this.massage}) : super(key: key);
+  final String massage;
 
   @override
   Widget build(BuildContext context) {
-    return Center(child:Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        const SizedBox(height: 20,),
-        Text("Empty Task",style:Theme.of(context).textTheme.bodyText2)
-      ],
-    ));
+    return Expanded(
+      child: Center(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children:[
+            Text(massage,style: Theme.of(context).textTheme.headline6,),
+          ],
+        ),
+      ),
+    );
   }
 }

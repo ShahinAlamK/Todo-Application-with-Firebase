@@ -1,5 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:todo_application/widgets/senckbar_widget.dart';
+
+import '../models/todo_model.dart';
+import '../providers/task_provider.dart';
 
 
 class TitleWidget extends StatelessWidget {
@@ -58,7 +63,7 @@ class TitleWidget extends StatelessWidget {
   }
 }
 
-bottomSheetModel(BuildContext context)async{
+bottomSheetModel(BuildContext context,TodoModel todoModel)async{
   showModalBottomSheet(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       context: context, builder:(_){
@@ -66,7 +71,9 @@ bottomSheetModel(BuildContext context)async{
       children: [
         ListTile(
           onTap: (){
-            messageSnack(context,Theme.of(context).errorColor,"Deleted Todo");
+            Provider.of<TaskProvider>(context,listen: false)
+                .deleteTask(context: context,id:todoModel.id!, uid:FirebaseAuth.instance.currentUser!.uid);
+            //messageSnack(context,Theme.of(context).errorColor,"Deleted Todo");
             Navigator.pop(context);
           },
           leading: const Icon(Icons.delete),
@@ -75,7 +82,6 @@ bottomSheetModel(BuildContext context)async{
         ListTile(
           onTap: (){
             Navigator.canPop(context);
-            // Provider.of<TaskProvider>(context,listen: false).deleteTask(context,widget.taskModel.id!);
           },
           leading: const Icon(Icons.edit),
           title: const Text("Edit Task"),),

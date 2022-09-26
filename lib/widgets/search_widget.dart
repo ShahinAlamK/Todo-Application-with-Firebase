@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:todo_application/utilities/constant.dart';
 
 class SearchWidget extends StatelessWidget {
-  const SearchWidget({Key? key}) : super(key: key);
+  final ValueChanged valueChanged;
+  const SearchWidget({Key? key, required this.valueChanged}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -24,6 +25,7 @@ class SearchWidget extends StatelessWidget {
          const SizedBox(width: 10,),
 
           Expanded(child: TextFormField(
+            onChanged: valueChanged,
             style: theme.textTheme.bodyText1,
             decoration:const InputDecoration(
               border: InputBorder.none,
