@@ -31,7 +31,6 @@ class _TodoPageState extends State<TodoPage>with TickerProviderStateMixin {
   AnimationController?_animationController;
   AnimationController?_rAnimationController;
   final ScrollController _scrollController=ScrollController();
-   bool _isScrolling=true;
 
   LocalNotification localNotification=LocalNotification();
   final _statKey=GlobalKey<ScaffoldState>();
@@ -61,14 +60,9 @@ class _TodoPageState extends State<TodoPage>with TickerProviderStateMixin {
   _scrollListener(){
     if(_scrollController.position.pixels<100){
       _animationController!.forward();
-      setState(() {
-        _isScrolling=true;
-      });
+
     } if(_scrollController.position.pixels>100){
-      _animationController!.forward();
-      setState(() {
-        _isScrolling=false;
-      });
+      _animationController!.forward(); 
     }
   }
 
@@ -125,7 +119,7 @@ class _TodoPageState extends State<TodoPage>with TickerProviderStateMixin {
                     color:Colors.blueGrey,
                     shape: BoxShape.circle
                   ),
-                 child: user.isLoading?Image.network(user.profileData.profile!,fit: BoxFit.cover,):SvgPicture.asset(""),
+                 child: user.isLoading?Image.network(user.profileData.profile!,fit: BoxFit.cover,):Icon(Icons.person),
                 ),
               ),
             ),
@@ -141,6 +135,7 @@ class _TodoPageState extends State<TodoPage>with TickerProviderStateMixin {
       floatingActionButton:CustomAnimatedWidget(
         animationController: _rAnimationController!,
         wSlideDirection:AnimDirection.fromBottom,
+        
         child: FloatingActionButton(
           onPressed:(){Navigator.of(context).push(customRoute(const CreateTodoPage()));},
           mini: true,
@@ -180,7 +175,9 @@ class _TodoPageState extends State<TodoPage>with TickerProviderStateMixin {
       return const Expanded(child: Center(child: CircularProgressIndicator()));
     }
     if(taskProvider.taskList.isEmpty){
-      return const EmptyWidget(massage:"Uncompleted Todo",);
+      return const EmptyWidget(massage:"Empty Todo",);
+    }if(query.length==0){
+      return const EmptyWidget(massage:"Not Found Todo",);
     }else{
       return TodoBuilder(scrollController:_scrollController,todoList:query);
     }

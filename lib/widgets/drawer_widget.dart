@@ -82,7 +82,9 @@ class DrawerWidget extends StatelessWidget {
             leading: const Icon(Icons.exit_to_app),
             title: const Text("Log Out"),
             onTap: (){
-              Provider.of<AuthProvider>(context,listen: false).signOut().whenComplete(() => Navigator.of(context).pushReplacement(customRoute(const SignWithEmail())));
+              Provider.of<AuthProvider>(context,listen: false).signOut().whenComplete(() => 
+              
+              Navigator.of(context).pushAndRemoveUntil(customRoute(SignWithEmail()), (route) => false));
             },
           ),
         ],

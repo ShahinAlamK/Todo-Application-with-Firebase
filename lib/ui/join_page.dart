@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:todo_application/ui/todo_page.dart';
 import 'package:todo_application/widgets/loading_widget.dart';
-
-import '../animations/route_animation.dart';
 import '../providers/auth_provider.dart';
 import '../utilities/themes.dart';
 import '../widgets/button_widget.dart';
@@ -54,7 +51,7 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
             key: _formKey,
             child: ListView(
               children: [
-                SizedBox(height:size.height*.04),
+                SizedBox(height:size.height*.07),
 
                 Center(child: Column(
                       children: [

@@ -78,13 +78,6 @@ bottomSheetModel(BuildContext context,TodoModel todoModel)async{
           },
           leading: const Icon(Icons.delete),
           title: const Text("Delete Task"),),
-
-        ListTile(
-          onTap: (){
-            Navigator.canPop(context);
-          },
-          leading: const Icon(Icons.edit),
-          title: const Text("Edit Task"),),
       ],
     );
   });

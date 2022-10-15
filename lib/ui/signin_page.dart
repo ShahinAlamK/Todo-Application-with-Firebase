@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_application/providers/auth_provider.dart';
-import 'package:todo_application/ui/todo_page.dart';
 import '../animations/route_animation.dart';
-import '../controllers/store_token.dart';
 import '../utilities/themes.dart';
 import '../widgets/button_widget.dart';
 import '../widgets/loading_widget.dart';
@@ -45,7 +43,6 @@ class _SignWithEmailState extends State<SignWithEmail>with SingleTickerProviderS
         Provider.of<AuthProvider>(context,listen: false)
             .signInAuth(context,_emailController.text,_passwordController.text)
             .whenComplete(() => setState(()=>isLoading=false));
-
       }
     }
   }
@@ -72,8 +69,11 @@ class _SignWithEmailState extends State<SignWithEmail>with SingleTickerProviderS
                     animationController: _rAnimationController!,
                     child: Column(
                       children: [
-                        Text("Welcome to",textAlign:TextAlign.center, style:Theme.of(context).textTheme.bodyText1!.copyWith(fontSize: 35)),
+                        Text("Welcome to",textAlign:TextAlign.center,
+                         style:Theme.of(context).textTheme.bodyText1!.copyWith(fontSize: 35)),
+                         
                         const SizedBox(height: 10,),
+
                         Text("Todo helps you stay organized and perform you tasks much faster",textAlign:TextAlign.center,
                             style:Theme.of(context).textTheme.bodyText1!.copyWith(fontSize:14)),
                       ],
