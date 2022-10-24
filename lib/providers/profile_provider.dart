@@ -26,10 +26,6 @@ class ProfileProvider extends ChangeNotifier{
     notifyListeners();
   }
 
-  ProfileProvider(){
-    fetchUser();
-  }
-
 
   fetchUser()async{
     Stream snapshot=profileCollection.doc(FirebaseAuth.instance.currentUser!.uid).snapshots();
@@ -44,6 +40,10 @@ class ProfileProvider extends ChangeNotifier{
       setData(userModel);
       notifyListeners();
     });
+  }
+
+  Future deletedUser(String uid)async{
+    profileCollection.doc(uid).delete();
   }
 
   Future updateProfile(UserModel userModel)async{

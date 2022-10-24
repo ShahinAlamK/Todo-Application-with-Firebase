@@ -6,13 +6,13 @@ import 'package:todo_application/models/todo_model.dart';
 import 'package:todo_application/ui/create_todo_page.dart';
 import 'package:todo_application/ui/profile_page.dart';
 import 'package:todo_application/utilities/constant.dart';
+import 'package:todo_application/utilities/size_config.dart';
 import 'package:todo_application/widgets/drawer_widget.dart';
 import 'package:todo_application/widgets/search_widget.dart';
 import '../controllers/local_notification.dart';
 import '../providers/profile_provider.dart';
 import '../providers/task_provider.dart';
 import '../views/todo_builder.dart';
-import '../widgets/empty_widget.dart';
 import '../widgets/line_widget.dart';
 import 'package:timezone/data/latest.dart' as tz;
 
@@ -66,7 +66,6 @@ class _TodoPageState extends State<TodoPage>with TickerProviderStateMixin {
     }
   }
 
-
   String? _searchController='';
   List<TodoModel>searchResult(String query){
     List<TodoModel>result=Provider.of<TaskProvider>(context).taskList.where((element){
@@ -75,11 +74,17 @@ class _TodoPageState extends State<TodoPage>with TickerProviderStateMixin {
     return result;
   }
 
-
+  CheckImage(String image){
+      if(image.isEmpty){
+        return AssetImage("");
+      }else{
+        return NetworkImage(image);
+      }
+}
 
   @override
   Widget build(BuildContext context) {
-
+    sizeConfig().init(context);
     TaskProvider taskProvider=context.watch<TaskProvider>();
     final user=Provider.of<ProfileProvider>(context);
     user.fetchUser();
@@ -94,44 +99,33 @@ class _TodoPageState extends State<TodoPage>with TickerProviderStateMixin {
       key: _statKey,
 
       appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: Row(
-          children: [
-            SizedBox(width: Constant.defaultPadding,),
-            IconButton(onPressed:(){
-              _statKey.currentState!.openDrawer();
-            }, icon:const Icon(Icons.menu)),
-            const Spacer(),
+        centerTitle: true,
+        leading:IconButton(onPressed:(){
+          _statKey.currentState!.openDrawer();
+        }, icon:const Icon(Icons.menu)),
 
-            GestureDetector(
-              onTap: (){
-                Navigator.of(context).push(customRoute(ProfilePage(
-                  username: user.profileData.name!,
-                  profile: user.profileData.profile!,
-                  uid: user.profileData.uid!,)));
-              },
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(50),
-                child: Container(
-                  height: 40,
-                  width: 40,
-                  decoration:const BoxDecoration(
-                    color:Colors.blueGrey,
-                    shape: BoxShape.circle
-                  ),
-                 child: user.isLoading?Image.network(user.profileData.profile!,fit: BoxFit.cover,):Icon(Icons.person),
-                ),
-              ),
-            ),
-           SizedBox(width: Constant.defaultPadding,)
+        title:Text("Today Todo"),
 
-          ],
-        ),
+        actions: [
+          GestureDetector(
+            onTap: (){
+              Navigator.of(context).push(customRoute(ProfilePage(
+                username: user.profileData.name!,
+                profile: user.profileData.profile!,
+                uid: user.profileData.uid!,)));
+            },
+            child:user.isLoading?CircleAvatar(
+              maxRadius: 16,
+              backgroundColor:Colors.green,
+              backgroundImage:CheckImage(user.profileData.profile!),
+            ):SizedBox(),
+          ),
+          SizedBox(width:sizeConfig.weight!*.05)
+        ],
       ),
 
       drawer:const DrawerWidget(),
-      
-
+  
       floatingActionButton:CustomAnimatedWidget(
         animationController: _rAnimationController!,
         wSlideDirection:AnimDirection.fromBottom,
@@ -147,19 +141,15 @@ class _TodoPageState extends State<TodoPage>with TickerProviderStateMixin {
           padding:EdgeInsets.symmetric(horizontal: Constant.defaultPadding),
           child: Column(
             children:[
-
-             const SizedBox(height:15),
+             SizedBox(height:sizeConfig.height!*.02),
               SearchWidget(valueChanged: (value) {
                 setState(() {
                   _searchController=value;
                 });
               },),
-
-              const SizedBox(height:25),
+              SizedBox(height:sizeConfig.height!*.03),
               const LineWidget(),
-
-              const SizedBox(height:25),
-
+              SizedBox(height:sizeConfig.height!*.03),
               ui(taskProvider,todoSearch),
 
             ],
@@ -170,14 +160,13 @@ class _TodoPageState extends State<TodoPage>with TickerProviderStateMixin {
   }
 
   ui(TaskProvider taskProvider,query){
-
     if(taskProvider.isLoading){
-      return const Expanded(child: Center(child: CircularProgressIndicator()));
+      return Center(child: CircularProgressIndicator());
     }
     if(taskProvider.taskList.isEmpty){
-      return const EmptyWidget(massage:"Empty Todo",);
+      return  SvgPicture.asset("assets/undraw_personal_file.svg",height:200,);
     }if(query.length==0){
-      return const EmptyWidget(massage:"Not Found Todo",);
+      return  SvgPicture.asset("assets/undraw_personal_file.svg",height: 200,);
     }else{
       return TodoBuilder(scrollController:_scrollController,todoList:query);
     }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_application/widgets/loading_widget.dart';
 import '../providers/auth_provider.dart';
@@ -17,57 +18,38 @@ class SignUpWithEmail extends StatefulWidget {
 
 class _SignUpWithEmailState extends State<SignUpWithEmail> {
 
-  bool isLoading=false;
   final _formKey=GlobalKey<FormState>();
-  final TextEditingController _usernameController=TextEditingController();
-  final TextEditingController _emailController=TextEditingController();
-  final TextEditingController _passwordController=TextEditingController();
 
-
-  formValidity()async{
-    if(_formKey.currentState!.validate()){
-      var theme=Theme.of(context);
-      if(_emailController.text.isEmpty ||_passwordController.text.isEmpty){
-        messageSnack(context,theme.errorColor,"Invalid FormField");
-      }
-      else{
-        setState(()=>isLoading=true);
-        Provider.of<AuthProvider>(context,listen: false)
-            .signUpWithEmail(context,_emailController.text,_passwordController.text,_usernameController.text)
-            .whenComplete(() => setState(()=>isLoading=false));
-      }
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
+
+    final provider=Provider.of<AuthProvider>(context);
     final size=MediaQuery.of(context).size;
+
     return OverLoading(
-      isLoading:isLoading,
+      isLoading:provider.isLoading,
       child: Scaffold(
         body:Padding(
           padding:const EdgeInsets.symmetric(horizontal: 30),
           child: Form(
             key: _formKey,
             child: ListView(
+              physics:BouncingScrollPhysics(),
               children: [
                 SizedBox(height:size.height*.07),
 
-                Center(child: Column(
-                      children: [
-                        Text("Welcome to",textAlign:TextAlign.center, style:Theme.of(context).textTheme.bodyText1!.copyWith(fontSize: 35)),
-                        const SizedBox(height: 10,),
-                        Text("Todo helps you stay organized and perform you tasks much faster",textAlign:TextAlign.center,
-                            style:Theme.of(context).textTheme.bodyText1!.copyWith(fontSize:14)),
-                      ],
-                    )
-                ),
+                SvgPicture.asset("assets/mobile_encryption.svg",height: size.height*0.20),
+                SizedBox(height:size.height*.03,),
 
-                SizedBox(height:size.height*.12,),
+                Text("Todo helps you stay organized and perform you tasks much faster",textAlign:TextAlign.center,
+                    style:Theme.of(context).textTheme.bodyText1!.copyWith(fontSize:14)),
+
+                SizedBox(height:size.height*.03,),
 
 
                 TextFormField(
-                  controller: _usernameController,
+                  controller: provider.userController,
                   decoration: InputDecoration(
                       hintText: "Username",
                       prefixIcon: const Icon(Icons.person),
@@ -78,7 +60,8 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
                 ),
                 SizedBox(height:size.height*.03 ,),
                 TextFormField(
-                  controller: _emailController,
+                  controller: provider.emailController,
+                  keyboardType:TextInputType.emailAddress,
                   decoration: InputDecoration(
                       hintText: "Enter Email",
                       hintStyle: Theme.of(context).textTheme.bodyText2,
@@ -89,7 +72,7 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
                 ),
                 SizedBox(height:size.height*.03 ,),
                 TextFormField(
-                  controller: _passwordController,
+                  controller: provider.passwordController,
                   decoration: InputDecoration(
                       hintText: "Password",
                       hintStyle: Theme.of(context).textTheme.bodyText2,
@@ -103,7 +86,7 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
                 //SignUp Button
                 ButtonWidget(
                   onTap:() {
-                    formValidity();
+                    provider.joinValid(context);
                   },
                   radius: 7,
                   color: Theme.of(context).colorScheme.secondary,

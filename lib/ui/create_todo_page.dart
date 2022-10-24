@@ -33,7 +33,7 @@ class _CreateTodoPageState extends State<CreateTodoPage> {
     storeTodo()async{
       if(_key.currentState!.validate()){
         if(_titleController.text.isEmpty || _descriptionController.text.isEmpty){
-          messageSnack(context,Colors.redAccent,"Invalid Form");
+           messageSnack(context,Colors.redAccent,"Invalid Form");
         }else{
           TodoModel todoModel=TodoModel(
             title:_titleController.text,

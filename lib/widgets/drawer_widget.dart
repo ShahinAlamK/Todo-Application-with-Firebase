@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
@@ -13,9 +14,18 @@ import 'developer_info.dart';
 class DrawerWidget extends StatelessWidget {
   const DrawerWidget({Key? key}) : super(key: key);
 
+
+  checkImg(String img){
+    if(img.isEmpty){
+      return SvgPicture.asset("assets/mobile_encryption.svg",fit:BoxFit.cover,);
+    }if(img==null){
+      return SvgPicture.asset("assets/mobile_encryption.svg");
+    }
+    return Image.network(img,fit:BoxFit.cover,);
+  }
+
   @override
   Widget build(BuildContext context) {
-
     final user=Provider.of<ProfileProvider>(context);
     final task=Provider.of<TaskProvider>(context);
     user.fetchUser();
@@ -44,7 +54,7 @@ class DrawerWidget extends StatelessWidget {
                         color:Colors.blueGrey,
                         shape: BoxShape.circle
                     ),
-                    child: user.isLoading?Image.network(user.profileData.profile!,fit: BoxFit.cover,):SvgPicture.asset(""),
+                    child: user.isLoading?checkImg(user.profileData.profile!):SizedBox(),
                   ),
                 ),
               ),
@@ -79,11 +89,21 @@ class DrawerWidget extends StatelessWidget {
             title: const Text("Developer"),
           ),
            ListTile(
+            leading: const Icon(Icons.delete),
+            title: const Text("Delete Account",),
+            onTap: (){
+              Navigator.pop(context);
+              Provider.of<AuthProvider>(context,listen: false).deleteAccount(context,FirebaseAuth.instance.currentUser!).whenComplete((){
+                Navigator.of(context).pushAndRemoveUntil(customRoute(SignWithEmail()), (route) => false);
+              }
+              );},
+          ),
+           ListTile(
             leading: const Icon(Icons.exit_to_app),
             title: const Text("Log Out"),
             onTap: (){
-              Provider.of<AuthProvider>(context,listen: false).signOut().whenComplete(() => 
-              
+              Provider.of<AuthProvider>(context,listen: false).signOut().whenComplete(() =>
+
               Navigator.of(context).pushAndRemoveUntil(customRoute(SignWithEmail()), (route) => false));
             },
           ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 
 class EmptyWidget extends StatelessWidget {
@@ -12,6 +13,7 @@ class EmptyWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children:[
+          SvgPicture.asset("assets/undraw_personal_file.svg",height: 130,),
           Text(massage,style: Theme.of(context).textTheme.headline6,),
         ],
       ),

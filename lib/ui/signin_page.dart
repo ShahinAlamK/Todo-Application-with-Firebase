@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_application/providers/auth_provider.dart';
 import '../animations/route_animation.dart';
 import '../utilities/themes.dart';
 import '../widgets/button_widget.dart';
 import '../widgets/loading_widget.dart';
-import '../widgets/senckbar_widget.dart';
 import 'join_page.dart';
 
 class SignWithEmail extends StatefulWidget {
@@ -26,41 +26,23 @@ class _SignWithEmailState extends State<SignWithEmail>with SingleTickerProviderS
   }
 
 
-  bool isLoading=false;
   final _formKey=GlobalKey<FormState>();
-  final TextEditingController _emailController=TextEditingController();
-  final TextEditingController _passwordController=TextEditingController();
-
-
-  formValidity()async{
-    var theme=Theme.of(context);
-    if(_formKey.currentState!.validate()){
-      if(_emailController.text.isEmpty ||_passwordController.text.isEmpty){
-       messageSnack(context,theme.errorColor,"Invalid FormField");
-      }
-      else{
-        setState(()=>isLoading=true);
-        Provider.of<AuthProvider>(context,listen: false)
-            .signInAuth(context,_emailController.text,_passwordController.text)
-            .whenComplete(() => setState(()=>isLoading=false));
-      }
-    }
-  }
-
 
 
   @override
   Widget build(BuildContext context) {
+    final valid=Provider.of<AuthProvider>(context);
     final size=MediaQuery.of(context).size;
     var theme=Theme.of(context);
     return OverLoading(
-        isLoading: isLoading,
+        isLoading: valid.isLoading,
         child:Scaffold(
           body:Padding(
             padding:const EdgeInsets.symmetric(horizontal: 30),
             child: Form(
               key: _formKey,
               child: ListView(
+                physics: BouncingScrollPhysics(),
                 children: [
                   SizedBox(height:size.height*.07),
 
@@ -69,10 +51,9 @@ class _SignWithEmailState extends State<SignWithEmail>with SingleTickerProviderS
                     animationController: _rAnimationController!,
                     child: Column(
                       children: [
-                        Text("Welcome to",textAlign:TextAlign.center,
-                         style:Theme.of(context).textTheme.bodyText1!.copyWith(fontSize: 35)),
-                         
-                        const SizedBox(height: 10,),
+
+                        SvgPicture.asset("assets/mobile_encryption.svg",height: size.height*0.20),
+                        SizedBox(height:size.height*.02,),
 
                         Text("Todo helps you stay organized and perform you tasks much faster",textAlign:TextAlign.center,
                             style:Theme.of(context).textTheme.bodyText1!.copyWith(fontSize:14)),
@@ -80,14 +61,14 @@ class _SignWithEmailState extends State<SignWithEmail>with SingleTickerProviderS
                     ),
                   )),
 
-                  SizedBox(height:size.height*.12,),
+                  SizedBox(height:size.height*.03),
 
                   /*Start email address form field*/
                   CustomAnimatedWidget(
                     wSlideDirection: AnimDirection.fromTop,
                     animationController: _rAnimationController!,
                     child: TextFormField(
-                      controller: _emailController,
+                      controller: valid.emailController,
                       keyboardType: TextInputType.emailAddress,
                       decoration: InputDecoration(
                           hintText: "Enter Email",
@@ -107,7 +88,7 @@ class _SignWithEmailState extends State<SignWithEmail>with SingleTickerProviderS
                     wSlideDirection: AnimDirection.fromTop,
                     animationController: _rAnimationController!,
                     child: TextFormField(
-                      controller: _passwordController,
+                      controller: valid.passwordController,
                       decoration: InputDecoration(
                           hintText: "Password",
                           prefixIcon: const Icon(Icons.lock),
@@ -134,7 +115,7 @@ class _SignWithEmailState extends State<SignWithEmail>with SingleTickerProviderS
                     animationController: _rAnimationController!,
                     child: ButtonWidget(
                       onTap:() {
-                        formValidity();
+                        valid.LoginValid(context);
                       },
                       radius: 7,
                       color: Theme.of(context).colorScheme.secondary,
@@ -142,7 +123,7 @@ class _SignWithEmailState extends State<SignWithEmail>with SingleTickerProviderS
                     ),
                   ),
 
-                  SizedBox(height:size.height*.05,),
+                  SizedBox(height:size.height*.03),
 
                   //New user account todos application Sign-Up
                   CustomAnimatedWidget(
