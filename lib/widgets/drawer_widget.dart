@@ -4,11 +4,12 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_application/providers/auth_provider.dart';
 import 'package:todo_application/providers/task_provider.dart';
-import 'package:todo_application/ui/completed_page.dart';
-import 'package:todo_application/ui/signin_page.dart';
+import 'package:todo_application/ui/login_page/signin_page.dart';
+import 'package:todo_application/utilities/size_config.dart';
 import '../animations/route_animation.dart';
 import '../controllers/local_notification.dart';
 import '../providers/profile_provider.dart';
+import '../ui/todo_page/completed_page.dart';
 import 'developer_info.dart';
 
 class DrawerWidget extends StatelessWidget {
@@ -33,6 +34,7 @@ class DrawerWidget extends StatelessWidget {
 
     return Drawer(
       elevation:0,
+      width: sizeConfig.screenWeight!/1.5,
       child: ListView(
         children: [
 
@@ -58,8 +60,15 @@ class DrawerWidget extends StatelessWidget {
                   ),
                 ),
               ),
-              accountName:Text(user.isLoading?user.profileData.name!:"",style: Theme.of(context).textTheme.bodyText1),
-              accountEmail: Text(user.isLoading?user.profileData.email!:"",style: Theme.of(context).textTheme.bodyText2)),
+              accountName:Text(user.isLoading?user.profileData.name!:"",
+                style:Theme.of(context).textTheme.bodyText1!.copyWith(
+                  fontSize: sizeConfig.screenSizeHorizontal!*4
+              ),),
+
+              accountEmail: Text(user.isLoading?user.profileData.email!:"",
+                style:Theme.of(context).textTheme.bodyText2!.copyWith(
+                    fontSize: sizeConfig.screenSizeHorizontal!*3),
+              )),
 
            ListTile(
             onTap:(){
@@ -68,16 +77,22 @@ class DrawerWidget extends StatelessWidget {
             },
              trailing: Text("${task.isLoading?0:task.completeTodo.length.toString()}"),
             leading: const Icon(Icons.done_all),
-            title: const Text("Complete Task"),
+            title:Text("Complete Task",style:Theme.of(context).textTheme.bodyText2!.copyWith(
+              fontSize: sizeConfig.screenSizeHorizontal!*4
+            ),),
           ),
+
            ListTile(
             onTap:(){
               Navigator.pop(context);
               localNotification.notificationSend("Settings","Coming Soon");
             },
             leading: const Icon(Icons.settings),
-            title: const Text("Settings"),
+            title:Text("Settings",style:Theme.of(context).textTheme.bodyText2!.copyWith(
+                fontSize: sizeConfig.screenSizeHorizontal!*4
+            ),),
           ),
+
            ListTile(
             onTap:(){
               Navigator.pop(context);
@@ -86,11 +101,17 @@ class DrawerWidget extends StatelessWidget {
               });
             },
             leading: const Icon(Icons.device_hub),
-            title: const Text("Developer"),
+            title:Text("Developer",style:Theme.of(context).textTheme.bodyText2!.copyWith(
+                fontSize: sizeConfig.screenSizeHorizontal!*4
+            ),),
           ),
+
            ListTile(
             leading: const Icon(Icons.delete),
-            title: const Text("Delete Account",),
+            title:Text("Delete Account",style:Theme.of(context).textTheme.bodyText2!.copyWith(
+                fontSize: sizeConfig.screenSizeHorizontal!*4
+            ),),
+
             onTap: (){
               Navigator.pop(context);
               Provider.of<AuthProvider>(context,listen: false).deleteAccount(context,FirebaseAuth.instance.currentUser!).whenComplete((){
@@ -98,9 +119,13 @@ class DrawerWidget extends StatelessWidget {
               }
               );},
           ),
+
            ListTile(
             leading: const Icon(Icons.exit_to_app),
-            title: const Text("Log Out"),
+            title:Text("Log Out",style:Theme.of(context).textTheme.bodyText2!.copyWith(
+                fontSize: sizeConfig.screenSizeHorizontal!*4
+            ),),
+
             onTap: (){
               Provider.of<AuthProvider>(context,listen: false).signOut().whenComplete(() =>
 

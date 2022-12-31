@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:todo_application/utilities/size_config.dart';
 import '../providers/task_provider.dart';
 
 
@@ -17,8 +18,9 @@ class LineWidget extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children:[
-        Text("All Todo",style:theme.textTheme.headline6,),
-        Text("Total todo :  ${task.isLoading?0:task.taskList.length}",style:theme.textTheme.bodyText2,),
+        Text("All Todo",style:theme.textTheme.headline6!.copyWith(fontSize:sizeConfig.screenSizeHorizontal!*4),),
+        Text("Total todo :  ${task.isLoading?0:task.taskList.length}",
+          style:theme.textTheme.bodyText2!.copyWith(fontSize:sizeConfig.screenSizeHorizontal!*3),)
       ],
     );
   }

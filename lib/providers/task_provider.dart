@@ -30,7 +30,8 @@ class TaskProvider extends ChangeNotifier{
   }
 
 
-
+  //All todo fetching method
+  //unique user for results
   fetchTask({required uid})async{
     List<TodoModel>temp=[];
     try {
@@ -56,25 +57,8 @@ class TaskProvider extends ChangeNotifier{
   }
   //End Todos
 
-
  List<TodoModel>get completeTodo=>_taskModel.where((element) => element.isComplete==true).toList();
  List<TodoModel>get unCompleteTodo=>_taskModel.where((element) => element.isComplete==false).toList();
-
-Future createTask({required BuildContext context, required uid,required TodoModel todoModel})async{
-  try{
-    await taskCollection.doc(uid).collection("task").doc().set({
-      "title":todoModel.title,
-      "description":todoModel.description,
-      "isComplete":todoModel.isComplete,
-      "start":todoModel.start,
-      "end":todoModel.end,
-      "date":todoModel.dateTime,
-      "create":todoModel.create
-    }).whenComplete(() =>  messageSnack(context,Colors.green,"Added new todo"));
-  }on FirebaseException catch(e){
-    messageSnack(context,kButtonColor,e.message!);
-  }
-}
 
 
 Future<void>deleteTask({required BuildContext context,required uid, required String id})async{
@@ -85,7 +69,6 @@ Future<void>deleteTask({required BuildContext context,required uid, required Str
     messageSnack(context,kButtonColor,e.message!);
   }
 }
-
 
 //Start Update
 Future<void>updateComplete({required BuildContext context,required uid,required id, required bool isComplete})async{

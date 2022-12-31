@@ -3,9 +3,10 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:todo_application/utilities/size_config.dart';
 import 'package:todo_application/widgets/loading_widget.dart';
-import '../models/user_model.dart';
-import '../providers/profile_provider.dart';
+import '../../models/user_model.dart';
+import '../../providers/profile_provider.dart';
 
 
 class ProfilePage extends StatefulWidget {
@@ -108,74 +109,84 @@ class _ProfilePageState extends State<ProfilePage> {
         appBar: AppBar(
           elevation: 0,
           centerTitle: true,
-          title: const Text("Profile"),
+          title:Text("Profile",style:Theme.of(context).textTheme.headline6!.copyWith(
+              fontSize:sizeConfig.screenSizeHorizontal!*5
+          ),),
         ),
 
         body:Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Column(
-            children: [
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
 
-              const SizedBox(height:50),
+                const SizedBox(height:50),
 
-              Container(
-                height: 100,
-                width: 100,
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(50),
-                    image: DecorationImage(
-                        fit: BoxFit.cover,
-                        image:displayProfileImage()
-                    )
-                ),
-              ),
-              const SizedBox(height: 30,),
-
-              Center(child: GestureDetector(
-                onTap: (){
-                  _imagePick();
-                },
-                child: Text("Choose image",style:Theme.of(context).textTheme.bodyText1
-                  ,),
-              )),
-
-              const SizedBox(height:40,),
-
-              Container(
-                margin: const EdgeInsets.symmetric(horizontal: 30),
-                child: Form(
-                  child: Column(
-                    children: [
-
-                      Form(
-                        key:_formKey,
-                        child: TextFormField(
-                          initialValue:username,
-                          onChanged: (val){
-                            username=val;
-                          },
-                          decoration: const InputDecoration(
-                              hintText: "Username",
-                              filled: true,
-                              border: InputBorder.none
-                          ),
-                        ),
-                      ),
-
-                      const SizedBox(height:30,),
-
-
-                    ],
+                Container(
+                  height: 100,
+                  width: 100,
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(50),
+                      image: DecorationImage(
+                          fit: BoxFit.cover,
+                          image:displayProfileImage()
+                      )
                   ),
                 ),
-              ),
+                const SizedBox(height: 30,),
+
+                Center(child: GestureDetector(
+                  onTap: (){
+                    _imagePick();
+                  },
+                  child: Text("Choose image",style:Theme.of(context).textTheme.bodyText1!.copyWith(
+                    fontSize:sizeConfig.screenSizeHorizontal!*4
+                  )
+                    ,),
+                )),
+
+                const SizedBox(height:40,),
+
+                Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 30),
+                  child: Form(
+                    child: Column(
+                      children: [
+
+                        Form(
+                          key:_formKey,
+                          child: TextFormField(
+                            initialValue:username,
+                            onChanged: (val){
+                              username=val;
+                            },
+                            decoration: const InputDecoration(
+                                hintText: "Username",
+                                filled: true,
+                                border: InputBorder.none
+                            ),
+                          ),
+                        ),
+
+                        const SizedBox(height:30,),
 
 
-              ElevatedButton(onPressed:(){
-                _update();
-              },style:Theme.of(context).elevatedButtonTheme.style, child:const Text("Update"))
-            ],
+                      ],
+                    ),
+                  ),
+                ),
+
+
+                ElevatedButton(onPressed:(){
+                  _update();
+                },style:Theme.of(context).elevatedButtonTheme.style,
+                    child:Text("Update",style:Theme.of(context).textTheme.bodyText1!.copyWith(
+                        fontSize:sizeConfig.screenSizeHorizontal!*4,
+                      color:Colors.black
+                    ) ,))
+              ],
+            ),
           ),
         ),
       ),

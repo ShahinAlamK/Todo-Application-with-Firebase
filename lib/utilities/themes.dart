@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:todo_application/utilities/constant.dart';
 import 'package:todo_application/utilities/fonts.dart';
+import 'package:todo_application/utilities/size_config.dart';
 
 const Color kBgColor=Color(0xff0D2237);
 const Color kTextColor=Color(0xffE0EAF4);
@@ -49,10 +50,11 @@ class CustomTheme{
       style: ButtonStyle(
         elevation: MaterialStateProperty.all(2),
         backgroundColor: MaterialStateProperty.all(kButtonColor),
-        textStyle: MaterialStateProperty.all(CustomFontStyle.bodyFonts.copyWith(color:kTextColor)),
+        textStyle: MaterialStateProperty.all(CustomFontStyle.mediumFonts.copyWith(color:kTextColor)),
         padding: MaterialStateProperty.all(EdgeInsets.symmetric(horizontal: Constant.defaultPadding))
       )
     ),
+
     appBarTheme: const AppBarTheme(
       titleSpacing: 0,
      centerTitle: false,
@@ -60,28 +62,34 @@ class CustomTheme{
      scrolledUnderElevation: 0,
      backgroundColor: kBgColor,
     ),
+
     drawerTheme:const DrawerThemeData(
       backgroundColor: kBgColor,
       elevation: 1
     ),
+
     progressIndicatorTheme: const ProgressIndicatorThemeData(
       color: kButtonColor,
       linearMinHeight: 1
     ),
+
     textTheme: TextTheme(
-      headline6: CustomFontStyle.headingFonts,
-      bodyText1: CustomFontStyle.bodyFonts,
-      bodyText2: CustomFontStyle.bodyFonts1
+      bodyText1: CustomFontStyle.mediumFonts,
+      bodyText2: CustomFontStyle.smallFonts,
+      headline6: CustomFontStyle.largeFonts
     ),
+
     inputDecorationTheme: InputDecorationTheme(
-      hintStyle: CustomFontStyle.bodyFonts1,
+      hintStyle: CustomFontStyle.smallFonts,
       border: InputBorder.none,
       prefixIconColor:kButtonColor,
     ),
+
     checkboxTheme: CheckboxThemeData(
       checkColor:MaterialStateProperty.all(kBgColor),
       fillColor:MaterialStateProperty.all(kButtonColor),
     ),
+
     iconTheme:const IconThemeData(color: kTextColor)
   );
 }

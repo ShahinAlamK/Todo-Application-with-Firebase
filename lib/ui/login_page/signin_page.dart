@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_application/providers/auth_provider.dart';
-import '../animations/route_animation.dart';
-import '../utilities/themes.dart';
-import '../widgets/button_widget.dart';
-import '../widgets/loading_widget.dart';
-import 'join_page.dart';
+import 'package:todo_application/utilities/size_config.dart';
+import '../../animations/route_animation.dart';
+import '../../utilities/themes.dart';
+import '../../widgets/button_widget.dart';
+import '../../widgets/loading_widget.dart';
+import '../register_page/join_page.dart';
 
 class SignWithEmail extends StatefulWidget {
   const SignWithEmail({Key? key}) : super(key: key);
@@ -31,8 +32,8 @@ class _SignWithEmailState extends State<SignWithEmail>with SingleTickerProviderS
 
   @override
   Widget build(BuildContext context) {
+    sizeConfig().init(context);
     final valid=Provider.of<AuthProvider>(context);
-    final size=MediaQuery.of(context).size;
     var theme=Theme.of(context);
     return OverLoading(
         isLoading: valid.isLoading,
@@ -44,7 +45,7 @@ class _SignWithEmailState extends State<SignWithEmail>with SingleTickerProviderS
               child: ListView(
                 physics: BouncingScrollPhysics(),
                 children: [
-                  SizedBox(height:size.height*.07),
+                  SizedBox(height:sizeConfig.screenHeight!*.03 ,),
 
                   Center(child: CustomAnimatedWidget(
                     wSlideDirection: AnimDirection.fromTop,
@@ -52,16 +53,19 @@ class _SignWithEmailState extends State<SignWithEmail>with SingleTickerProviderS
                     child: Column(
                       children: [
 
-                        SvgPicture.asset("assets/mobile_encryption.svg",height: size.height*0.20),
-                        SizedBox(height:size.height*.02,),
+                        SvgPicture.asset("assets/mobile_encryption.svg",height: sizeConfig.screenSizeVertical!*25),
+
+                        SizedBox(height:sizeConfig.screenHeight!*.03 ,),
 
                         Text("Todo helps you stay organized and perform you tasks much faster",textAlign:TextAlign.center,
-                            style:Theme.of(context).textTheme.bodyText1!.copyWith(fontSize:14)),
+                            style:Theme.of(context).textTheme.bodyText2!.copyWith(
+                                fontSize:sizeConfig.screenSizeHorizontal!*4
+                            )),
                       ],
                     ),
                   )),
 
-                  SizedBox(height:size.height*.03),
+                  SizedBox(height:sizeConfig.screenHeight!*.03 ,),
 
                   /*Start email address form field*/
                   CustomAnimatedWidget(
@@ -81,7 +85,7 @@ class _SignWithEmailState extends State<SignWithEmail>with SingleTickerProviderS
                   ),
                   /*End email address form field*/
 
-                  SizedBox(height:size.height*.03 ,),
+                  SizedBox(height:sizeConfig.screenHeight!*.03 ,),
 
                   /*Start password form field*/
                   CustomAnimatedWidget(
@@ -100,14 +104,17 @@ class _SignWithEmailState extends State<SignWithEmail>with SingleTickerProviderS
                   ),
                   /*End password form field*/
 
-                  SizedBox(height:size.height*.03 ,),
+                  SizedBox(height:sizeConfig.screenHeight!*.03 ,),
 
                   //User password forget widget
                   CustomAnimatedWidget(
                       wSlideDirection: AnimDirection.fromTop,
                       animationController: _rAnimationController!,
-                      child: Text('Forget Password?',style:theme.textTheme.bodyText2!.copyWith(decoration: TextDecoration.underline))),
-                  SizedBox(height:size.height*.05,),
+                      child: Text('Forget Password?',
+                          style:theme.textTheme.bodyText2!.copyWith(
+                            fontSize:sizeConfig.screenSizeHorizontal!*3.5,
+                              decoration: TextDecoration.underline))),
+                  SizedBox(height:sizeConfig.screenHeight!*.05,),
 
                   //Log-In Button
                   CustomAnimatedWidget(
@@ -119,11 +126,13 @@ class _SignWithEmailState extends State<SignWithEmail>with SingleTickerProviderS
                       },
                       radius: 7,
                       color: Theme.of(context).colorScheme.secondary,
-                      label:Text("Login".toUpperCase(),style:Theme.of(context).textTheme.headline6!.copyWith(color:kBgColor),),
+                      label:Text("Login".toUpperCase(),style:Theme.of(context).textTheme.bodyText1!.copyWith(
+                        fontSize: sizeConfig.screenSizeHorizontal!*4,
+                          color:kBgColor),),
                     ),
                   ),
 
-                  SizedBox(height:size.height*.03),
+                  SizedBox(height:sizeConfig.screenHeight!*.03),
 
                   //New user account todos application Sign-Up
                   CustomAnimatedWidget(
@@ -132,14 +141,20 @@ class _SignWithEmailState extends State<SignWithEmail>with SingleTickerProviderS
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Text("don't have a account?"),
+                        Text("don't have a account?",style:theme.textTheme.bodyText2!.copyWith(
+                            fontSize:sizeConfig.screenSizeHorizontal!*4,
+                        )),
+
                         const SizedBox(width:8),
+
                         GestureDetector(
                           onTap: (){
                             Navigator.of(context).push(customRoute(const SignUpWithEmail()));
                           },
                           child: Text("Sign Up".toUpperCase(),
-                              style:theme.textTheme.bodyText2!.copyWith(decoration: TextDecoration.underline)),
+                              style:theme.textTheme.bodyText2!.copyWith(
+                                fontSize:sizeConfig.screenSizeHorizontal!*3,
+                                  decoration: TextDecoration.underline)),
                         )
                       ],
                     ),

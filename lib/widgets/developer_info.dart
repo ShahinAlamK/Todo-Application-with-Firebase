@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:todo_application/utilities/size_config.dart';
 
 import '../models/developer_model.dart';
 
@@ -23,22 +24,45 @@ class DeveloperInfoDialog extends StatelessWidget {
           children: [
             Positioned(
                 top: -50,
-                child:CircleAvatar(radius: 40,backgroundColor: theme.colorScheme.secondary,backgroundImage: NetworkImage(developer.pic!),)),
+                child:CircleAvatar(radius: sizeConfig.screenHeight!*.06,
+                  backgroundColor: theme.colorScheme.secondary,backgroundImage: NetworkImage(developer.pic!),)),
 
             Container(
               padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height:35),
-                  Center(child: Text(developer.name!,style: theme.textTheme.bodyText1,)),
-                  const SizedBox(height:25),
-                  Text("Email : ${developer.email}",style: theme.textTheme.bodyText2,),
-                  const SizedBox(height: 6,),
-                  Text("professional : ${developer.professional}",style: theme.textTheme.bodyText2,),
-                  const SizedBox(height:6),
-                  Text("Address : ${developer.address}",style: theme.textTheme.bodyText2,),
-                ],
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height:35),
+
+                    Center(child: Text(developer.name!,
+                        style:Theme.of(context).textTheme.headline6!.copyWith(
+                            fontSize:sizeConfig.screenSizeHorizontal!*4
+                        )
+                    )),
+
+                    const SizedBox(height:25),
+
+                    Text("Email : ${developer.email}",
+                      style:Theme.of(context).textTheme.bodyText2!.copyWith(
+                        fontSize:sizeConfig.screenSizeHorizontal!*4
+                    ),),
+
+                    const SizedBox(height: 6,),
+
+                    Text("professional : ${developer.professional}",
+                        style:Theme.of(context).textTheme.bodyText2!.copyWith(
+                            fontSize:sizeConfig.screenSizeHorizontal!*4
+                        )
+                    ),
+                    const SizedBox(height:6),
+                    Text("Address : ${developer.address}",
+                        style:Theme.of(context).textTheme.bodyText2!.copyWith(
+                            fontSize:sizeConfig.screenSizeHorizontal!*4
+                        )
+                    ),
+                  ],
+                ),
               ),
             ),
           ],

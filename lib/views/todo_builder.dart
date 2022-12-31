@@ -1,12 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:todo_application/ui/details_page.dart';
+import 'package:todo_application/utilities/size_config.dart';
 import '../animations/listitem_animation.dart';
 import '../animations/route_animation.dart';
 import '../controllers/local_notification.dart';
 import '../models/todo_model.dart';
 import '../providers/task_provider.dart';
+import '../ui/todo_page/details_page.dart';
 import '../widgets/title_widget.dart';
 
 
@@ -52,7 +53,9 @@ class _TodoBuilderState extends State<TodoBuilder>with SingleTickerProviderState
               onTap: (){
                 Navigator.of(context).push(customRoute(DetailsPage(todoModel: widget.todoList[index],)));
               },
-              longTap:widget.todoList[index].isComplete==false?null:(){bottomSheetModel(context,widget.todoList[index]);},
+              longTap:widget.todoList[index].isComplete==false?null:(){
+                bottomSheetModel(context,widget.todoList[index]);
+                },
               leading: Container(
                 height: 30,
                 width: 30,
@@ -76,12 +79,32 @@ class _TodoBuilderState extends State<TodoBuilder>with SingleTickerProviderState
 
               title:Text(widget.todoList[index].title!,maxLines: 1,overflow:TextOverflow.ellipsis,
                 style: theme.textTheme.bodyText1!
-                    .copyWith(decoration:widget.todoList[index].isComplete==true?TextDecoration.lineThrough:TextDecoration.none ),),
+                    .copyWith(
+                    decoration:widget.todoList[index].isComplete==true?
+                    TextDecoration.lineThrough:TextDecoration.none,
+                  fontSize:sizeConfig.screenSizeHorizontal!*4
+                ),),
+
               subTitle: Row(
                 children: [
-                  Text("Start: ${widget.todoList[index].start!}",style: theme.textTheme.bodyText2!.copyWith(decoration:widget.todoList[index].isComplete==true?TextDecoration.lineThrough:TextDecoration.none ),),
-                  const SizedBox(width: 15),
-                  Text("End: ${widget.todoList[index].end!}",style: theme.textTheme.bodyText2!.copyWith(decoration:widget.todoList[index].isComplete==true?TextDecoration.lineThrough:TextDecoration.none ),),
+
+                  Text("Start: ${widget.todoList[index].start!}",
+                    style: theme.textTheme.bodyText2!.copyWith(
+                        decoration:widget.todoList[index].isComplete==true?
+                        TextDecoration.lineThrough:TextDecoration.none,
+                      fontSize: sizeConfig.screenSizeHorizontal!*3
+                    ),),
+
+                   SizedBox(width:sizeConfig.screenSizeHorizontal!*5),
+
+                  Expanded(
+                    child: Text("End: ${widget.todoList[index].end!}",maxLines: 1,overflow: TextOverflow.fade,
+                      style: theme.textTheme.bodyText2!.copyWith(
+                          decoration:widget.todoList[index].isComplete==true?
+                          TextDecoration.lineThrough:TextDecoration.none,
+                          fontSize: sizeConfig.screenSizeHorizontal!*3
+                      ),),
+                  ),
                 ],
               ),
             ));

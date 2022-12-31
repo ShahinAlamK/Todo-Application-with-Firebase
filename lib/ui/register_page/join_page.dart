@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
+import 'package:todo_application/utilities/size_config.dart';
 import 'package:todo_application/widgets/loading_widget.dart';
-import '../providers/auth_provider.dart';
-import '../utilities/themes.dart';
-import '../widgets/button_widget.dart';
-import '../widgets/senckbar_widget.dart';
+import '../../providers/auth_provider.dart';
+import '../../utilities/themes.dart';
+import '../../widgets/button_widget.dart';
+import '../../widgets/senckbar_widget.dart';
 
 
 
@@ -25,7 +26,6 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
   Widget build(BuildContext context) {
 
     final provider=Provider.of<AuthProvider>(context);
-    final size=MediaQuery.of(context).size;
 
     return OverLoading(
       isLoading:provider.isLoading,
@@ -37,15 +37,18 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
             child: ListView(
               physics:BouncingScrollPhysics(),
               children: [
-                SizedBox(height:size.height*.07),
+                SizedBox(height:sizeConfig.screenHeight!*.03),
 
-                SvgPicture.asset("assets/mobile_encryption.svg",height: size.height*0.20),
-                SizedBox(height:size.height*.03,),
+                SvgPicture.asset("assets/mobile_encryption.svg",height: sizeConfig.screenSizeVertical!*25),
+
+                SizedBox(height:sizeConfig.screenHeight!*.03),
 
                 Text("Todo helps you stay organized and perform you tasks much faster",textAlign:TextAlign.center,
-                    style:Theme.of(context).textTheme.bodyText1!.copyWith(fontSize:14)),
+                    style:Theme.of(context).textTheme.bodyText1!.copyWith(
+                        fontSize:sizeConfig.screenSizeHorizontal!*4
+                    )),
 
-                SizedBox(height:size.height*.03,),
+                SizedBox(height:sizeConfig.screenHeight!*.03),
 
 
                 TextFormField(
@@ -58,7 +61,9 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
                       border: InputBorder.none
                   ),
                 ),
-                SizedBox(height:size.height*.03 ,),
+
+                SizedBox(height:sizeConfig.screenHeight!*.03),
+
                 TextFormField(
                   controller: provider.emailController,
                   keyboardType:TextInputType.emailAddress,
@@ -70,7 +75,9 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
                       border: InputBorder.none
                   ),
                 ),
-                SizedBox(height:size.height*.03 ,),
+
+                SizedBox(height:sizeConfig.screenHeight!*.03),
+
                 TextFormField(
                   controller: provider.passwordController,
                   decoration: InputDecoration(
@@ -81,7 +88,8 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
                       border: InputBorder.none
                   ),
                 ),
-                SizedBox(height:size.height*.05,),
+
+                SizedBox(height:sizeConfig.screenHeight!*.03),
 
                 //SignUp Button
                 ButtonWidget(
@@ -90,8 +98,13 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
                   },
                   radius: 7,
                   color: Theme.of(context).colorScheme.secondary,
-                  label:Text("Create".toUpperCase(),style:Theme.of(context).textTheme.headline6!.copyWith(color:kBgColor),),
+                  label:Text("Create".toUpperCase(),
+                    style:Theme.of(context).textTheme.headline6!.copyWith(
+                        fontSize: sizeConfig.screenSizeHorizontal!*4,
+                        color:kBgColor
+                    ),),
                 ),
+                SizedBox(height:sizeConfig.screenHeight!*.03),
 
               ],
             ),

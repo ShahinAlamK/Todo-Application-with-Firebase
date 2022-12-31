@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:todo_application/utilities/constant.dart';
+import 'package:todo_application/utilities/size_config.dart';
 
 class SearchWidget extends StatelessWidget {
   final ValueChanged valueChanged;
@@ -9,14 +10,13 @@ class SearchWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme=Theme.of(context);
     return Container(
-      height: 45,
-     // margin: EdgeInsets.symmetric(horizontal:Constant.defaultPadding,),
       padding:EdgeInsets.symmetric(horizontal:Constant.defaultPadding),
       width:double.infinity,
       decoration: BoxDecoration(
         color:Colors.blueGrey.withOpacity(.1),
         borderRadius: BorderRadius.circular(50)
       ),
+
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -26,10 +26,15 @@ class SearchWidget extends StatelessWidget {
 
           Expanded(child: TextFormField(
             onChanged: valueChanged,
-            style: theme.textTheme.bodyText1,
+            autofocus: false,
+
+            style: theme.textTheme.bodyText1!.copyWith(
+              fontSize:sizeConfig.screenSizeHorizontal!*4
+            ),
             decoration:const InputDecoration(
               border: InputBorder.none,
-              hintText: "Search task"
+              hintText: "Search task",
+
             ),
           ))
         ],

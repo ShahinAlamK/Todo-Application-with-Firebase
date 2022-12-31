@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_application/utilities/constant.dart';
 import 'package:todo_application/views/todo_builder.dart';
-import '../animations/listitem_animation.dart';
-import '../controllers/local_notification.dart';
-import '../providers/task_provider.dart';
-import '../widgets/empty_widget.dart';
-import '../widgets/title_widget.dart';
+import '../../animations/listitem_animation.dart';
+import '../../controllers/local_notification.dart';
+import '../../providers/task_provider.dart';
+import '../../widgets/empty_widget.dart';
+import '../../widgets/title_widget.dart';
 import 'package:timezone/data/latest.dart' as tz;
 
 

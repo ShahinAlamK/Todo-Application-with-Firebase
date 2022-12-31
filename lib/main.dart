@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_application/providers/auth_provider.dart';
+import 'package:todo_application/providers/create_todo_provider.dart';
 import 'package:todo_application/providers/profile_provider.dart';
 import 'package:todo_application/providers/task_provider.dart';
-import 'package:todo_application/ui/signin_page.dart';
-import 'package:todo_application/ui/todo_page.dart';
+import 'package:todo_application/ui/login_page/signin_page.dart';
 import 'package:todo_application/utilities/themes.dart';
+
+import 'ui/todo_page/todo_page.dart';
 
 void main()async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -42,6 +44,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider<AuthProvider>(create:(_)=>AuthProvider()),
         ChangeNotifierProvider<ProfileProvider>(create:(_)=>ProfileProvider()),
         ChangeNotifierProvider<TaskProvider>(create:(_)=>TaskProvider()),
+        ChangeNotifierProvider<CreateTodoProvider>(create:(_)=>CreateTodoProvider()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
